@@ -1,0 +1,123 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+  # controllers are imported separately to make sure services can be injected
+  # as action arguments even if you don't extend any base controller class
+  App\Controller\:
+    resource: '../src/Controller'
+    tags: ['controller.service_arguments']
+
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
+  app.doctrine.hash_password_listener:
+    class: App\Doctrine\HashPasswordSubscriber
+    autowire: true
+    tags:
+      - { name: doctrine.event_subscriber, connection: 'default' }
+
+  admin.user:
+    class: App\Admin\UserAdmin
+    arguments: [~, App\Entity\User, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm,on_top: true, group: User, label: User }
+    public: true
+
+  admin.product:
+    class: App\Admin\ProductAdmin
+    arguments: [~, App\Entity\Product, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm,on_top: true,  group: Product, label: Product }
+    public: true
+
+  admin.product_category:
+    class: App\Admin\ProductCategoryAdmin
+    arguments: [~, App\Entity\ProductCategory, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Product Options, label: ProductCategory }
+    public: true
+
+  admin.product_class:
+    class: App\Admin\ProductClassAdmin
+    arguments: [~, App\Entity\ProductClass, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Product Options, label: ProductClass }
+    public: true
+
+  admin.standard:
+    class: App\Admin\StandardAdmin
+    arguments: [~, App\Entity\Standard, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Product Options, label: Standard }
+    public: true
+
+  admin.countries:
+    class: App\Admin\CountriesAdmin
+    arguments: [~, App\Entity\Countries, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Product Options, label: Countries }
+    public: true
+
+  admin.company:
+    class: App\Admin\CompanyAdmin
+    arguments: [~, App\Entity\Company, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Company, label: Company }
+    public: true
+
+  admin.company_contacts:
+    class: App\Admin\CompanyContactsAdmin
+    arguments: [~, App\Entity\CompanyContacts, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Company, label: CompanyContacts }
+    public: true
+
+  admin.documents:
+    class: App\Admin\DocumentAdmin
+    arguments: [~, App\Entity\Document, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Documents, label: Documents }
+    public: true
+
+  admin.certificate_company:
+    class: App\Admin\CertificateCompanyAdmin
+    arguments: [~, App\Entity\CertificateCompany, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Company, label: CertificateCompany }
+    public: true
+
+  admin.document_type:
+    class: App\Admin\DocumentTypeAdmin
+    arguments: [~, App\Entity\DocumentType, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Documents, label: DocumentType }
+    public: true
+
+  admin.brand:
+    class: App\Admin\BrandAdmin
+    arguments: [~, App\Entity\Brand, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Company, label: Brand }
+    public: true
+
+  admin.blacklist_cause:
+    class: App\Admin\BlacklistCauseAdmin
+    arguments: [~, App\Entity\BlacklistCause, ~]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: Company, label: BlacklistCause }
+    public: true
